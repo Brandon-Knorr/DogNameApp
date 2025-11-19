@@ -18,8 +18,7 @@ namespace DogPoemApp.Models
 
     // 2. BeanPoems Model
     // https://www.beanpoems.com/api/poems/random
-    // Note: The prompt implies a simple object, but APIs often return arrays.
-    // We will handle the deserialization logic in the service.
+    // Note: The API may return the poem text as an array of lines or a single string.
     public class Poem
     {
         [JsonPropertyName("title")]
@@ -28,9 +27,8 @@ namespace DogPoemApp.Models
         [JsonPropertyName("author")]
         public string Author { get; set; }
 
-        [JsonPropertyName("poemText")]
-        // Note: Adjust property name based on actual API JSON key if different
-        // Some poem APIs use "content" or "lines".
-        public string Content { get; set; }
+        // Changed to a list so ViewModel can join lines reliably.
+        // ApiService will normalize whichever shape the API returns (string or array).
+        public List<string> Content { get; set; }
     }
 }
