@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:DogPoemApp.ViewModels"
+             xmlns:conv="clr-namespace:DogPoemApp.Converters"
+             x:Class="DogPoemApp.MainPage">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <conv:BoolToOpacityConverter x:Key="BoolToOpacityConverter" TrueOpacity="1.0" FalseOpacity="0.35" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <!-- Set Binding Context -->
+    <ContentPage.BindingContext>
+        <vm:MainViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid>
+        <!-- Background Gradient -->
+        <BoxView>
+            <BoxView.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#FF9A9E" Offset="0.0" />
+                    <GradientStop Color="#FECFEF" Offset="1.0" />
+                </LinearGradientBrush>
+            </BoxView.Background>
+        </BoxView>
+
+        <!-- Main Card Area -->
+        <Grid RowDefinitions="*, Auto" Padding="20, 40">
+
+            <!-- Swipe Container -->
+            <Border x:Name="CardContainer"
+                    Grid.Row="0"
+                    Stroke="#CCCCCC"
+                    StrokeThickness="0"
+                    BackgroundColor="White"
+                    Padding="0"
+                    Margin="10">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="25" />
+                </Border.StrokeShape>
+
+                <Border.Shadow>
+                    <Shadow Brush="Black" Offset="5,5" Radius="10" Opacity="0.2"/>
+                </Border.Shadow>
+
+                <!-- Gesture Recognizers for Swiping -->
+                <Border.GestureRecognizers>
+                    <SwipeGestureRecognizer Direction="Left" Swiped="OnSwiped" />
+                    <SwipeGestureRecognizer Direction="Right" Swiped="OnSwiped" />
+                </Border.GestureRecognizers>
+
+                <Grid RowDefinitions="3*, 2*">
+
+                    <!-- Dog Image -->
+                    <Image Grid.Row="0"
+                           Source="{Binding DogImageUrl}"
+                           Aspect="AspectFill"
+                           VerticalOptions="FillAndExpand"
+                           HorizontalOptions="FillAndExpand"/>
+
+                    <!-- Loading Indicator (Overlay) -->
+                    <ActivityIndicator Grid.Row="0" Grid.RowSpan="2"
+                                       IsRunning="{Binding IsLoading}"
+                                       IsVisible="{Binding IsLoading}"
+                                       Color="#FF9A9E"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"
+                                       Scale="2"/>
+
+                    <!-- Poem Content -->
+                    <ScrollView Grid.Row="1" Padding="20">
+                        <VerticalStackLayout Spacing="10" 
+                                             Opacity="{Binding IsContentVisible, Converter={StaticResource BoolToOpacityConverter}}">
+
+                            <Label Text="{Binding PoemTitle}"
+                                   FontSize="22"
+                                   FontAttributes="Bold"
+                                   TextColor="#333333"
+                                   HorizontalTextAlignment="Center"/>
+
+                            <Label Text="{Binding PoemContent}"
+                                   FontSize="16"
+                                   FontAttributes="Italic"
+                                   TextColor="#555555"
+                                   HorizontalTextAlignment="Center"/>
+
+                            <Label Text="{Binding PoemAuthor}"
+                                   FontSize="14"
+                                   TextColor="#888888"
+                                   HorizontalOptions="End"/>
+                        </VerticalStackLayout>
+                    </ScrollView>
+                </Grid>
+            </Border>
+
+            <!-- Instructions / Hint -->
+            <Label Grid.Row="1"
+                   Text="Swipe Left or Right for new pairings"
+                   HorizontalOptions="Center"
+                   TextColor="#555"
+                   FontSize="14"
+                   Padding="0,20,0,0"/>
+        </Grid>
+    </Grid>
+
+</ContentPage>
